@@ -1,12 +1,12 @@
-from FungsiAktivasi import FungsiAktivasi
-from FungsiLoss import FungsiLoss
-from Layer import Layer
-from typing import Any, List
+from Fungsi.FungsiAktivasi import FungsiAktivasi
+from Fungsi.FungsiLoss import FungsiLoss
+from Komponen.Layer import Layer
+from typing import List
 
 class FFNN:
     def __init__(self, input: List[float], output: List[float], input_size: int, hidden_size: int, output_size: int, n_hidden: int,
-                 activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: str = "uniform", 
-                 lower_bound: float = 10, upper_bound: float = 100, mean: float = None, 
+                 activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: str = "zero", 
+                 lower_bound: float = None, upper_bound: float = None, mean: float = None, 
                  variance: float = None, seed: int = 42):
         # Inisialisasi model.
         # input_size: Jumlah input
@@ -41,8 +41,7 @@ class FFNN:
     def load(self):
         pass
 
-f: FungsiAktivasi = FungsiAktivasi("relu")
-FFNN([1, 1], [1, 1], 2, 2, 2, 1, [f for _ in range(3)])
-
+# Testing
 from visualize import visualize_ffnn
-visualize_ffnn(FFNN([1, 1], [1, 1], 2, 4, 2, 2, [f for _ in range(4)]))
+
+visualize_ffnn(FFNN([1, 1], [1, 1], 2, 4, 2, 2, [FungsiAktivasi("relu") for _ in range(4)], weight_init_method = "uniform", lower_bound = 0, upper_bound = 50, seed = 42))

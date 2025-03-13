@@ -1,6 +1,6 @@
-from Neuron import Neuron
 from typing import List
-from FungsiAktivasi import FungsiAktivasi
+from Komponen.Neuron import Neuron
+from Fungsi.FungsiAktivasi import FungsiAktivasi
 
 class Layer:
     def __init__(self, n_neurons: int, 

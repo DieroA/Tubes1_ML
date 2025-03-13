@@ -1,6 +1,4 @@
 import numpy as np
-from typing import Callable
-from FungsiAktivasi import FungsiAktivasi
 
 class Neuron:
     def __init__(self, n_input: int, weight_init_method: str,
@@ -11,7 +9,7 @@ class Neuron:
 
         if seed is not None:
             np.random.seed(seed)
-            
+
         def generateWeight() -> float:
             # Inisialisasi bobot neuron menggunakan metode yang dimasukkan."
             
