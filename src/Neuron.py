@@ -6,14 +6,14 @@ class Neuron:
     def __init__(self, n_input: int, weight_init_method: str,
                  lower_bound: float = None, upper_bound: float = None,
                  mean: float = None, variance: float = None,
-                 seed: int = None):
+                 seed: int = None, value: float = 0.0):
         # Inisialisasi neuron.
 
+        if seed is not None:
+            np.random.seed(seed)
+            
         def generateWeight() -> float:
             # Inisialisasi bobot neuron menggunakan metode yang dimasukkan."
-
-            if seed is not None:
-                np.random.seed(seed)
             
             if weight_init_method == "zero":
                 return 0
@@ -29,3 +29,5 @@ class Neuron:
         
         self.weights: np.array = np.array([generateWeight() for _ in range(n_input)])
         self.bias: float = generateWeight()
+
+        self.value: float = value
