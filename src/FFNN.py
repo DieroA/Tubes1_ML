@@ -34,7 +34,7 @@ class FFNN:
         self.generate_matrices()
 
     def generate_matrices(self):
-        # Generate weight & bias matrice for each layer
+        # Menghasilkan matriks bobot & bias untuk setiap layer
         for idx, layer in enumerate(self.layers):
             if (idx != 0):
                 weight_matrice: np.array = np.array([neuron.weights for neuron in layer.neurons])
@@ -48,11 +48,11 @@ class FFNN:
             layer.value_matrice = value_matrice   
 
     def update_neurons_from_matrices(self):
-        # Update neurons' weights & biases from stored layer matrices.
+        # Memperbarui bobot & bias neuron dari matriks yang tersimpan di layer
         for layer in self.layers[1:]:
-            weight_matrice = layer.weight_matrice
-            bias_matrice = layer.bias_matrice
-            value_matrice = layer.value_matrice
+            weight_matrice: np.array = layer.weight_matrice
+            bias_matrice: np.array = layer.bias_matrice
+            value_matrice: np.array = layer.value_matrice
 
             for i, neuron in enumerate(layer.neurons):
                 neuron.weights = weight_matrice[i]
