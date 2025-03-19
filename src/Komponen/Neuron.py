@@ -1,4 +1,5 @@
 import numpy as np
+from typing import List
 
 class Neuron:
     def __init__(self, n_input: int, weight_init_method: str,

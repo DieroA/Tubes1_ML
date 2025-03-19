@@ -1,6 +1,7 @@
 from typing import List
 from Komponen.Neuron import Neuron
 from Fungsi.FungsiAktivasi import FungsiAktivasi
+import numpy as np
 
 class Layer:
     def __init__(self, n_neurons: int, 
@@ -14,3 +15,7 @@ class Layer:
         
         self.neurons: List[Neuron] = [Neuron(n_input, weight_init_method, lower_bound, upper_bound, mean, variance, seed, values[i]) for i in range(n_neurons)]
         self.activation_func = activation_func
+
+        self.weight_matrice: np.array = np.empty((0, 0))
+        self.bias_matrice: np.array = np.empty(0)
+        self.value_matrice: np.array = np.empty(0)
