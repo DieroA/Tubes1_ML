@@ -30,6 +30,12 @@ class FFNN:
 
         # Output layer
         self.layers.append(Layer(output_size, hidden_size, weight_init_method, activation_func[-1], lower_bound, upper_bound, mean, variance, seed, output))
+        
+        # Loss Function
+        self.lost_function:FungsiLoss = loss_func
+
+        # Target Value
+        self.target : List[float] = output
 
         self.generate_matrices()
 
@@ -60,7 +66,21 @@ class FFNN:
                 neuron.value = value_matrice[i]
 
     def forward_propagation(self):
-        pass
+        for idx, layer in enumerate(self.layers) :
+            if (idx != 0):
+                # Mencari net
+                hidden_value = np.dot(layer.weight_matrice, last_value) + layer.bias_matrice
+                # Fungsi Aktivasi
+                hidden_value = self.activation_func[idx].func(hidden_value)
+                #Update nilai matriks
+                layer.value_matrice = hidden_value
+            # Nilai input untuk layer berikutnya
+            last_value = layer.value_matrice
+        # Fungsi Loss untuk nilai error
+        error = self.lost_function.func(self.target, last_value)
+        # Update value tiap neuron setelah 
+        self.update_neurons_from_matrices()
+        return error
 
     def backward_propagation(self):
         pass
@@ -74,4 +94,6 @@ class FFNN:
 # Testing
 from visualize import visualize_ffnn
 
-visualize_ffnn(FFNN([1, 1], [1, 1], 2, 4, 2, 2, [FungsiAktivasi("relu") for _ in range(4)], weight_init_method = "uniform", lower_bound = 0, upper_bound = 50, seed = 42))
+ffnn = FFNN([1, 1], [1, 1], 2, 4, 2, 2, [FungsiAktivasi("relu") for _ in range(4)], weight_init_method = "uniform", lower_bound = 0, upper_bound = 1, seed = 42)
+ffnn.forward_propagation()
+visualize_ffnn(ffnn)
