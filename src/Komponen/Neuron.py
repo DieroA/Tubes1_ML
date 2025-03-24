@@ -5,7 +5,7 @@ class Neuron:
     def __init__(self, n_input: int, weight_init_method: str,
                  lower_bound: float = None, upper_bound: float = None,
                  mean: float = None, variance: float = None,
-                 seed: int = None, value: float = 0.0):
+                 seed: int = None):
         # Inisialisasi neuron.
 
         if seed is not None:
@@ -29,4 +29,4 @@ class Neuron:
         self.weights: np.array = np.array([generateWeight() for _ in range(n_input)])
         self.bias: float = generateWeight()
 
-        self.value: float = value
+        self.value_matrice: np.array = np.zeros((0, 0))

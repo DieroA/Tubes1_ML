@@ -22,7 +22,7 @@ def visualize_ffnn(ffnn):
         for neuron_idx, neuron in enumerate(layer.neurons):
             node_id = f"L{layer_idx}_N{neuron_idx}"
             pos[node_id] = (x_offset, y_offset - neuron_idx)
-            node_labels[node_id] = f"{neuron.value:.2f}"  # Show neuron value rounded to 2 decimal places
+            # node_labels[node_id] = f"{neuron.value_matrice[0]:.2f}"  # Show neuron value rounded to 2 decimal places
         
         x_offset += 1  # Move to next layer
 
