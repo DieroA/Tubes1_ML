@@ -50,8 +50,6 @@ class FFNN:
                 layer.bias_matrice = bias_matrice
 
             value_matrice: np.array = np.array([[neuron.value] for neuron in layer.neurons])
-
-            print(value_matrice)
             
             layer.value_matrice = value_matrice   
 
