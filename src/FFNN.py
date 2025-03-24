@@ -67,11 +67,13 @@ class FFNN:
         for idx, layer in enumerate(self.layers) :
             if (idx != 0):
                 # Mencari net
-                hidden_value = np.dot(layer.weight_matrice, last_value) + layer.bias_matrice
+                hidden_value = np.dot(layer.weight_matrice, last_value.transpose()) + layer.bias_matrice
                 # Fungsi Aktivasi
+                # print(idx)
+                # print(hidden_value)
                 hidden_value = self.activation_func[idx].func(hidden_value)
                 #Update nilai matriks
-                layer.value_matrice = hidden_value
+                layer.value_matrice = hidden_value.transpose()
             # Nilai input untuk layer berikutnya
             last_value = layer.value_matrice
         # Fungsi Loss untuk nilai error
@@ -105,8 +107,8 @@ def display_matrices(model: FFNN):
             print("  Biases:\n", layer.bias_matrice)
             print("  Values:\n", layer.value_matrice)
 
-input_data = np.array([[1, 1], [1, 1]])
-output_target = np.array([1, 1])
+input_data = np.array([[1, 2], [3, 4]])
+output_target = np.array([[20, 20], [40, 40]])
 
 # Jumlah neuron per layer
 input_size = 2
@@ -125,5 +127,6 @@ ffnn = FFNN(
     fungsi_aktivasi, weight_init_method = "uniform", 
     lower_bound = 0, upper_bound = 1, seed = 42
 )
-
+loss_value = ffnn.forward_propagation()
 display_matrices(ffnn)
+print(loss_value)
