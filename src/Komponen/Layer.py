@@ -17,5 +17,5 @@ class Layer:
         self.activation_func = activation_func
 
         self.weight_matrice: np.array = np.empty((0, 0))
-        self.bias_matrice: np.array = np.empty(0)
-        self.value_matrice: np.array = np.empty(0)
+        self.bias_matrice: np.array = np.empty((0, 0))
+        self.value_matrice: np.array = np.empty((0, 0))

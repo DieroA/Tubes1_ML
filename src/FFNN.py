@@ -6,7 +6,7 @@ from typing import List
 import numpy as np
 
 class FFNN:
-    def __init__(self, input: List[float], output: List[float], input_size: int, hidden_size: int, output_size: int, n_hidden: int,
+    def __init__(self, input: np.array, output: List[float], input_size: int, hidden_size: int, output_size: int, n_hidden: int,
                  activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: str = "zero", 
                  lower_bound: float = None, upper_bound: float = None, mean: float = None, 
                  variance: float = None, seed: int = 42):
@@ -44,12 +44,14 @@ class FFNN:
         for idx, layer in enumerate(self.layers):
             if (idx != 0):
                 weight_matrice: np.array = np.array([neuron.weights for neuron in layer.neurons])
-                bias_matrice: np.array = np.array([neuron.bias for neuron in layer.neurons]) 
+                bias_matrice: np.array = np.array([[neuron.bias] for neuron in layer.neurons]) 
 
                 layer.weight_matrice = weight_matrice
                 layer.bias_matrice = bias_matrice
 
-            value_matrice: np.array = np.array([neuron.value for neuron in layer.neurons])
+            value_matrice: np.array = np.array([[neuron.value] for neuron in layer.neurons])
+
+            print(value_matrice)
             
             layer.value_matrice = value_matrice   
 
@@ -95,5 +97,5 @@ class FFNN:
 from visualize import visualize_ffnn
 
 ffnn = FFNN([1, 1], [1, 1], 2, 4, 2, 2, [FungsiAktivasi("relu") for _ in range(4)], weight_init_method = "uniform", lower_bound = 0, upper_bound = 1, seed = 42)
-ffnn.forward_propagation()
+# ffnn.forward_propagation()
 visualize_ffnn(ffnn)
