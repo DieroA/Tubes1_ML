@@ -22,3 +22,4 @@ class Layer:
         self.bias_matrice = np.array([[neuron.bias] for neuron in self.neurons])
 
         self.value_matrice: np.array = np.empty((0, 0))
+        self.gradients_matrice: np.array = np.empty((0, 0))

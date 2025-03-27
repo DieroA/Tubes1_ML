@@ -30,3 +30,4 @@ class Neuron:
         self.bias: float = generateWeight()
 
         self.value_matrice: np.array = np.zeros((0, 0))
+        self.gradients: np.array = np.zeros((0, 0))
