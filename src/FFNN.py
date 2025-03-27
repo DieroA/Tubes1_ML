@@ -117,7 +117,7 @@ class FFNN:
             output_gradient = loss_gradient * activation_derivative
         
         gradients.insert(0, output_gradient)
-        
+
         # Gradien mengalir dari layer belakang ke depan
         for i in range(len(self.layers)-2, 0, -1):
             current_layer = self.layers[i]
@@ -138,20 +138,19 @@ class FFNN:
                 layer_gradient = error * activation_derivative
                 
             gradients.insert(0, layer_gradient)
-        
 
         # Update bobot dan bias dengan gradien
         for i in range(1, len(self.layers)):
             current_layer = self.layers[i]
             prev_layer = self.layers[i-1]
             
-            # Hitung gradien bobot dan bias
-            weight_gradients = np.dot(prev_layer.value_matrice.T, gradients[i-1])
-            bias_gradients = np.mean(gradients[i-1], axis=0, keepdims=True).T
+            # Hitung Gradients
+            current_layer.weight_gradients = np.dot(prev_layer.value_matrice.T, gradients[i-1]) / self.batch_size
+            current_layer.bias_gradients = np.mean(gradients[i-1], axis=0, keepdims=True).T
             
-            # Update Bobot dan bias
-            current_layer.weight_matrice -= learning_rate * weight_gradients.T
-            current_layer.bias_matrice -= learning_rate * bias_gradients
+            # Update parameter
+            current_layer.weight_matrice -= learning_rate * current_layer.weight_gradients.T
+            current_layer.bias_matrice -= learning_rate * current_layer.bias_gradients
         
         # Update neuron
         self.update_neurons_from_matrices()
@@ -204,7 +203,7 @@ class FFNN:
                 else:
                     desc += f" - loss: {epoch_train_loss:.4f}"
                 
-                tqdm.write(desc)
+                # tqdm.write(desc)
         
         return history
 
@@ -229,6 +228,20 @@ class FFNN:
 from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 
+def display_matrices(model: FFNN):
+    print("=== Neural Network Matrices ===")
+    for idx, layer in enumerate(model.layers):
+        print(f"\nLayer {idx}:")
+        if idx == 0:
+            print("  Input Values:\n", layer.value_matrice)
+        else:
+            print("  Weights:\n", layer.weight_matrice)
+            print("  Weights Gradients:\n", layer.weight_gradients)
+            print("  Biases:\n", layer.bias_matrice)
+            print("  Biases Gradients:\n", layer.bias_gradients)
+            print("  Values:\n", layer.value_matrice)
+
+
 # Test data (simple linear relationship)
 X_train = np.array([[1, 1], [2, 2], [3, 3], [4, 4]])
 y_train = np.array([[30, 30], [60, 60], [90, 90], [120, 120]])
@@ -239,7 +252,7 @@ hidden_size = 4
 output_size = 2
 n_hidden = 2
 
-fungsi_aktivasi = [FungsiAktivasi("linear")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
+fungsi_aktivasi = [FungsiAktivasi("relu")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
 
 custom_nn = FFNN(
     X_train, y_train,
@@ -255,9 +268,9 @@ custom_nn = FFNN(
 print("Training Custom FFNN...")
 custom_history = custom_nn.train(
     X_train, y_train,
-    batch_size=2,
-    learning_rate=0.01,
-    epochs=1000,
+    batch_size=1000,
+    learning_rate=0.0001,
+    epochs=2000,
     verbose=1
 )
 
@@ -284,6 +297,8 @@ test_input_scaled = scaler.transform(test_input)
 custom_pred = custom_nn.predict(test_input)
 sklearn_pred = sklearn_nn.predict(test_input_scaled)
 
+display_matrices(custom_nn)
+
 print("\n=== Prediction Comparison ===")
 print(f"Input: {test_input[0]}")
 print(f"Custom FFNN prediction: {custom_pred[0]}")
@@ -303,16 +318,6 @@ print(f"Scikit-learn final loss: {final_sklearn_loss:.4f}")
 # # Testing
 # from visualize import visualize_ffnn
 
-# def display_matrices(model: FFNN):
-#     print("=== Neural Network Matrices ===")
-#     for idx, layer in enumerate(model.layers):
-#         print(f"\nLayer {idx}:")
-#         if idx == 0:
-#             print("  Input Values:\n", layer.value_matrice)
-#         else:
-#             print("  Weights:\n", layer.weight_matrice)
-#             print("  Biases:\n", layer.bias_matrice)
-#             print("  Values:\n", layer.value_matrice)
 
 # # Testing
 # input_data = np.array([[1, 1]])

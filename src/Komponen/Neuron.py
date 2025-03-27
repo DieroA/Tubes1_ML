@@ -27,7 +27,9 @@ class Neuron:
             raise ValueError(f"Metode inisialisasi bobot {weight_init_method} tidak valid!")
         
         self.weights: np.array = np.array([generateWeight() for _ in range(n_input)])
+        self.weights_gradients: np.array = np.array([generateWeight() for _ in range(n_input)])
         self.bias: float = generateWeight()
+        self.bias_gradients: float = generateWeight()
 
         self.value_matrice: np.array = np.zeros((0, 0))
         self.gradients: np.array = np.zeros((0, 0))
