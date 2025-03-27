@@ -1,6 +1,6 @@
 from Fungsi.FungsiAktivasi import FungsiAktivasi
 from Fungsi.FungsiLoss import FungsiLoss
-from Scaler.StandardScaler import StandardScalers
+# from Scaler.StandardScaler import StandardScalers
 from Komponen.Layer import Layer
 from typing import List
 from tqdm import tqdm
@@ -239,7 +239,7 @@ hidden_size = 4
 output_size = 2
 n_hidden = 2
 
-fungsi_aktivasi = [FungsiAktivasi("relu")] + [FungsiAktivasi("linear") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
+fungsi_aktivasi = [FungsiAktivasi("linear")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
 
 custom_nn = FFNN(
     X_train, y_train,
@@ -257,7 +257,7 @@ custom_history = custom_nn.train(
     X_train, y_train,
     batch_size=2,
     learning_rate=0.01,
-    epochs=10,
+    epochs=1000,
     verbose=1
 )
 
@@ -281,7 +281,7 @@ sklearn_nn.fit(X_scaled, y_train)
 test_input = np.array([[2.5, 2.5]])
 test_input_scaled = scaler.transform(test_input)
 
-custom_pred = custom_nn.predict(test_input_scaled)
+custom_pred = custom_nn.predict(test_input)
 sklearn_pred = sklearn_nn.predict(test_input_scaled)
 
 print("\n=== Prediction Comparison ===")
