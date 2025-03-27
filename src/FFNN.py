@@ -145,11 +145,11 @@ class FFNN:
             prev_layer = self.layers[i-1]
             
             # Hitung Gradients
-            current_layer.weight_gradients = np.dot(prev_layer.value_matrice.T, gradients[i-1]) / self.batch_size
+            current_layer.weight_gradients = np.dot(gradients[i-1].T, prev_layer.value_matrice) / self.batch_size
             current_layer.bias_gradients = np.mean(gradients[i-1], axis=0, keepdims=True).T
             
             # Update parameter
-            current_layer.weight_matrice -= learning_rate * current_layer.weight_gradients.T
+            current_layer.weight_matrice -= learning_rate * current_layer.weight_gradients
             current_layer.bias_matrice -= learning_rate * current_layer.bias_gradients
         
         # Update neuron
