@@ -8,7 +8,7 @@ from tqdm import tqdm
 import numpy as np
 
 class FFNN:
-    def __init__(self, input_data: np.array, output_data: np.array, input_size: int, hidden_size: int, output_size: int, n_hidden: int, batch_size: int, learning_rate: float, epoch: int,
+    def __init__(self, input_data: np.array, output_data: np.array, input_size: int, hidden_size: List[int], output_size: int, n_hidden: int, batch_size: int, learning_rate: float, epoch: int,
                  activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: List[str] = [], 
                  lower_bound: float = None, upper_bound: float = None, mean: float = None, 
                  variance: float = None, seed: int = 42):
@@ -95,7 +95,6 @@ class FFNN:
         return error
 
     def backward_propagation(self, batch_output):
-
         # Inisialisasi List Gradien
         gradients = []
         
@@ -118,6 +117,16 @@ class FFNN:
         
         gradients.insert(0, output_gradient)
 
+        max_grad_norm = 1.0
+        global_grad_norm = np.sqrt(sum(np.sum(g**2) for g in gradients))
+        if global_grad_norm > max_grad_norm:
+            scale = max_grad_norm / global_grad_norm
+            gradients = [g * scale for g in gradients]
+
+        for i in range(1, len(self.layers)):
+            current_layer = self.layers[i]
+            prev_layer = self.layers[i-1]
+
         # Gradien mengalir dari layer belakang ke depan
         for i in range(len(self.layers)-2, 0, -1):
             current_layer = self.layers[i]
@@ -126,11 +135,7 @@ class FFNN:
             error = np.dot(gradients[0], next_layer.weight_matrice)
         
             if self.activation_func[i].name == "softmax":
-                batch_gradients = []
-                for sample_idx in range(current_layer.value_matrice.shape[0]):
-                    jacobian = self.activation_func[i].derivative(current_layer.value_matrice[sample_idx])
-                    batch_gradients.append(np.dot(error[sample_idx], jacobian))
-                layer_gradient = np.array(batch_gradients)
+                raise ValueError(f"softmax bukan merupakan nama fungsi aktivasi yang valid untuk non output layer.")
             else:
                 activation_derivative = self.activation_func[i].derivative(current_layer.value_matrice)
                 layer_gradient = error * activation_derivative
@@ -226,139 +231,3 @@ class FFNN:
 
     def load(self):
         pass
-
-""" -------------------------------------------------------------------------------------------------------------------- """
-
-from sklearn.neural_network import MLPRegressor
-from sklearn.preprocessing import StandardScaler
-
-def display_matrices(model: FFNN):
-    print("=== Neural Network Matrices ===")
-    for idx, layer in enumerate(model.layers):
-        print(f"\nLayer {idx}:")
-        if idx == 0:
-            print("  Input Values:\n", layer.value_matrice)
-        else:
-            print("  Weights:\n", layer.weight_matrice)
-            print("  Weights Gradients:\n", layer.weight_gradients)
-            print("  Biases:\n", layer.bias_matrice)
-            print("  Biases Gradients:\n", layer.bias_gradients)
-            print("  Values:\n", layer.value_matrice)
-
-
-# Test data (simple linear relationship)
-X_train = np.array([[1, 1], [2, 2], [3, 3], [4, 4]])
-y_train = np.array([[30, 30], [60, 60], [90, 90], [120, 120]])
-
-# Your FFNN implementation
-input_size = 2
-hidden_size = 4
-output_size = 2
-n_hidden = 2
-
-fungsi_aktivasi = [FungsiAktivasi("relu")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
-weight_init_method = ["uniform" for _ in range(2 + n_hidden)]
-
-custom_nn = FFNN(
-    X_train, y_train,
-    input_size, hidden_size, output_size, n_hidden,
-    batch_size=3,
-    activation_func=fungsi_aktivasi,
-    learning_rate=0.0001,
-    epoch=2000,
-    loss_func=FungsiLoss("mse"),
-    weight_init_method=weight_init_method,
-    lower_bound=0, upper_bound=1,
-    seed=42
-)
-
-# Train your model
-print("Training Custom FFNN...")
-custom_history = custom_nn.train(
-    X_train, y_train,
-    verbose=1
-)
-
-# Scikit-learn's MLP
-print("\nTraining scikit-learn MLP...")
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X_train)
-
-sklearn_nn = MLPRegressor(
-    hidden_layer_sizes=(4, 4),
-    activation='relu',
-    solver='sgd',
-    learning_rate_init=0.01,
-    batch_size=2,
-    max_iter=1000,
-    random_state=42
-)
-sklearn_nn.fit(X_scaled, y_train)
-
-# Compare predictions
-test_input = np.array([[2.5, 2.5]])
-test_input_scaled = scaler.transform(test_input)
-
-custom_pred = custom_nn.predict(test_input)
-sklearn_pred = sklearn_nn.predict(test_input_scaled)
-
-display_matrices(custom_nn)
-
-print("\n=== Prediction Comparison ===")
-print(f"Input: {test_input[0]}")
-print(f"Custom FFNN prediction: {custom_pred[0]}")
-print(f"Scikit-learn prediction: {sklearn_pred[0]}")
-print(f"Expected output: [75, 75]")
-
-# Compare final losses
-final_custom_loss = custom_history['train_loss'][-1]
-final_sklearn_loss = np.mean((sklearn_nn.predict(X_scaled) - y_train) ** 2)
-
-print("\n=== Final Loss Comparison ===")
-print(f"Custom FFNN final loss: {final_custom_loss:.4f}")
-print(f"Scikit-learn final loss: {final_sklearn_loss:.4f}")
-
-from visualize import visualize_network
-
-visualize_network(custom_nn.layers)
-
-
-# # Testing
-# from visualize import visualize_ffnn
-
-
-# # Testing
-# input_data = np.array([[1, 1]])
-# output_target = np.array([[30, 30]])
-
-# # Jumlah neuron per layer
-# input_size = 2
-# hidden_size = 4
-# output_size = 2
-
-# # Jumlah hidden layer
-# n_hidden = 2
-
-# # Fungsi Aktivasi - Now properly initialized with derivative support
-# fungsi_aktivasi = [FungsiAktivasi("linear")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
-
-# ffnn = FFNN(
-#     input_data, output_target, 
-#     input_size, hidden_size, output_size, n_hidden, 
-#     fungsi_aktivasi, 
-#     loss_func=FungsiLoss("mse"),
-#     weight_init_method="uniform", 
-#     lower_bound=0, upper_bound=1, 
-#     seed=42
-# )
-
-# # Test forward and backward
-# print("=== Initial Pass ===")
-# loss_value = ffnn.forward_propagation()
-# display_matrices(ffnn)
-# print(f"Initial Loss: {loss_value}")
-
-# print("\n=== After Training ===")
-# ffnn.train()
-# display_matrices(ffnn)
-# print(f"After Loss: {loss_value}")

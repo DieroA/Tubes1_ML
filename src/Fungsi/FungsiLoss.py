@@ -72,3 +72,7 @@ class FungsiLoss:
         Computes the derivative of the loss function
         """
         return self.derivative_func(y_true, y_pred)
+    
+MSE = FungsiLoss("mse")
+BCE = FungsiLoss("bce")
+CCE = FungsiLoss("cce")

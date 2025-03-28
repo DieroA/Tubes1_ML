@@ -34,8 +34,9 @@ class FungsiAktivasi:
         return (x > 0).astype(float)
 
     @staticmethod
-    def sigmoid(x: np.array) -> np.array:
+    def sigmoid(x):
         return 1 / (1 + np.exp(-x))
+
 
     @staticmethod
     def sigmoid_derivative(x: np.array) -> np.array:
@@ -59,3 +60,9 @@ class FungsiAktivasi:
     def softmax_derivative(x: np.array) -> np.array:
         s = x.reshape(-1, 1)
         return np.diagflat(s) - np.dot(s, s.T)
+    
+RELU = FungsiAktivasi("relu")
+LINEAR = FungsiAktivasi("linear")
+SIGMOID = FungsiAktivasi("sigmoid")
+TANH = FungsiAktivasi("tanh")
+SOFTMAX = FungsiAktivasi("softmax")

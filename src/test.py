@@ -31,12 +31,13 @@ y_test_onehot = lb.transform(y_test)
 
 # Initialize FFNN
 input_size = 784  # 28x28 images
+n_hidden = 1
 hidden_size = 128
 output_size = 10   # Digits 0-9
-n_hidden = 1
 
 # Use ReLU for hidden, softmax for output
-fungsi_aktivasi = [FungsiAktivasi("linear")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("relu")]
+fungsi_aktivasi = [FungsiAktivasi("linear")] + [FungsiAktivasi("tanh") for _ in range(n_hidden)] + [FungsiAktivasi("softmax")]
+weight_init_method = ["uniform" for _ in range(2 + n_hidden)]
 
 ffnn = FFNN(
     X_train, y_train_onehot,
@@ -45,11 +46,11 @@ ffnn = FFNN(
     output_size=output_size,
     n_hidden=n_hidden,
     batch_size = 10,
-    learning_rate = 0.001,
-    epoch = 20,
+    learning_rate = 0.01,
+    epoch = 100,
     activation_func=fungsi_aktivasi,
     loss_func=FungsiLoss("cce"),  # Categorical cross-entropy
-    weight_init_method="uniform",
+    weight_init_method=weight_init_method,
     lower_bound=-0.1,
     upper_bound=0.1,
     seed=42
@@ -76,26 +77,3 @@ test_pred = ffnn.predict(X_test)
 
 print(f"Train accuracy: {accuracy(y_train_onehot, train_pred):.4f}")
 print(f"Test accuracy: {accuracy(y_test_onehot, test_pred):.4f}")
-
-# # Visualize learned weights (like the original example)
-# plt.figure(figsize=(10, 5))
-# scale = np.abs(ffnn.layers[1].weight_matrice).max()  # First hidden layer weights
-# for i in range(10):
-#     l1_plot = plt.subplot(2, 5, i + 1)
-#     # For visualization, take weights going to one output neuron
-#     if i < output_size:
-#         weights = ffnn.layers[-1].weight_matrice[i].reshape(28, 28)
-#     else:
-#         weights = ffnn.layers[1].weight_matrice[:,i].reshape(28, 28)
-#     l1_plot.imshow(
-#         weights,
-#         interpolation="nearest",
-#         cmap=plt.cm.RdBu,
-#         vmin=-scale,
-#         vmax=scale,
-#     )
-#     l1_plot.set_xticks(())
-#     l1_plot.set_yticks(())
-#     l1_plot.set_xlabel(f"Neuron {i}")
-# plt.suptitle("Learned weights visualization")
-# plt.show()
