@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from typing import List
-from Komponen.Layer import Layer
+from Model.Komponen.Layer import Layer
 import numpy as np
 
 def visualize_network(layers: List[Layer]):

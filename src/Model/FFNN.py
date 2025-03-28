@@ -1,7 +1,8 @@
 from Fungsi.FungsiAktivasi import FungsiAktivasi
 from Fungsi.FungsiLoss import FungsiLoss
 # from Scaler.StandardScaler import StandardScalers
-from Komponen.Layer import Layer
+import pickle
+from Model.Komponen.Layer import Layer
 from typing import List
 from tqdm import tqdm
 
@@ -234,8 +235,14 @@ class FFNN:
         # Return output layer values
         return last_value
 
-    def save(self):
-        pass
+    @staticmethod
+    def save(filename, model):
+        file = filename + ".pkl"
+        with open(file, 'wb') as f:
+            pickle.dump(model, f)
 
-    def load(self):
-        pass
+    @staticmethod
+    def load(filename):
+        file = filename + ".pkl"
+        with open(file, 'rb') as f:
+            return pickle.load(f)
