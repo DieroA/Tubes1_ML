@@ -159,6 +159,12 @@ class FFNN:
         self.update_neurons_from_matrices()
     
     def train(self, X_train, y_train, X_val=None, y_val=None, verbose=1):
+        def print_progress_bar(current_epoch: int, max_epoch: int, length: int = 40):
+            progress = current_epoch / max_epoch
+            filled_length = int(length * progress)
+
+            bar = "█" * filled_length + "-" * (length - filled_length)
+            print(f"[{bar}] {progress*100:.1f}%")
     
         history = {'train_loss': [], 'val_loss': []}
         
@@ -205,7 +211,9 @@ class FFNN:
                 else:
                     desc += f" - loss: {epoch_train_loss:.4f}"
                 
-                # tqdm.write(desc)
+                tqdm.write(desc)
+
+                print_progress_bar(epoch + 1, self.epoch)
         
         return history
 

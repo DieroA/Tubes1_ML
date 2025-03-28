@@ -36,8 +36,6 @@ lb = LabelBinarizer()
 y_train_onehot = lb.fit_transform(y_train)
 y_test_onehot = lb.transform(y_test)
 
-print(X_train)
-
 """ 
     --------------------------------------------------------------------------
 """
