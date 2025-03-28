@@ -41,13 +41,31 @@ INPUT_SIZE: int = 784
 OUTPUT_SIZE: int = 10
 
 # Variables
-depth: int = 2
-width: int = 1
+depth: int = 1
+width: int = 128
 activation_func: List[FungsiAktivasi] = [LINEAR] + [TANH for _ in range(depth)] + [SOFTMAX] 
 loss_func: List[FungsiLoss] = CCE
 weight_init_method: List[str] = ["uniform" for _ in range(2 + depth)]
 
 if __name__ == "__main__":
+    print("""
+          --------------------------------------------------------
+
+            ░▒▓████████▓▒░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░  
+            ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+            ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+            ░▒▓██████▓▒░ ░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+            ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+            ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+            ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+          
+          --------------------------------------------------------
+
+          Rici Trisna Putra (13522026)
+          Imam Hanif Mulyarahman (13522030)
+          Diero Arga Purnama (13522056)
+    """)
+
     model: Optional[FFNN] = None
 
     # Opsi untuk load
@@ -107,5 +125,50 @@ if __name__ == "__main__":
 
         FFNN.save(save_path, model)
     
+    """ Bandingkan dengan scikit """
+
+    compare: str = str(input("Apakah anda ingin melakukan perbandingan dengan model scikitlearn? [Ya/Tidak]: ")).strip().lower()
+    if compare != "ya":
+        exit()
+
+    from sklearn.neural_network import MLPRegressor
+    from sklearn.preprocessing import StandardScaler
+
+    sklearn_model = MLPRegressor(
+        hidden_layer_sizes=(width,) * depth,
+        activation='tanh',
+        solver='adam',
+        alpha=0.0001,
+        batch_size=batch_size,
+        learning_rate_init=learning_rate,
+        max_iter=jumlah_epoch,
+        random_state=42,
+        verbose=verbose
+    )
+
+    sklearn_model.fit(X_train, np.argmax(y_train_onehot, axis=1))
+    
+    sklearn_train_pred = sklearn_model.predict(X_train)
+    sklearn_test_pred = sklearn_model.predict(X_test)
+    
+    def to_onehot(predictions, num_classes=10):
+        predictions = predictions.reshape(-1, 1) if predictions.ndim == 1 else predictions
+
+        if predictions.ndim == 2:
+            predictions = np.argmax(predictions, axis=1)
+
+        onehot = np.zeros((predictions.shape[0], num_classes))
+        onehot[np.arange(predictions.shape[0]), predictions.astype(int)] = 1
+        return onehot
+
+    sklearn_train_pred_onehot = to_onehot(sklearn_train_pred)
+    sklearn_test_pred_onehot = to_onehot(sklearn_test_pred)
+    
+    # Accuracy Comparison
+    print("\nPerbandingan dengan FFNN scikit\n")
+    print(f"Model Train Accuracy: {accuracy(y_train_onehot, train_pred):.4f}")
+    print(f"Model Test Accuracy: {accuracy(y_test_onehot, test_pred):.4f}")
+    print(f"Scikit-learn Train Accuracy: {accuracy(y_train_onehot, sklearn_train_pred_onehot):.4f}")
+    print(f"Scikit-learn Test Accuracy: {accuracy(y_test_onehot, sklearn_test_pred_onehot):.4f}")
 
 
