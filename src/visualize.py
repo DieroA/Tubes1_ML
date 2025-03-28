@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from typing import List
 from Komponen.Layer import Layer
+import numpy as np
 
 def visualize_network(layers: List[Layer]):
     """
@@ -125,4 +126,56 @@ def visualize_network(layers: List[Layer]):
 
     # Display plot
     plt.title("FFNN", fontsize = 12)
+    plt.show()
+
+def plot_weight_dist(layer_idxs: List[int], layers: List[Layer]):
+    # 0 -> input
+    # len(layers) - 1 -> output
+
+    displayed_layers: List[Layer] = []
+    for idx in layer_idxs:
+        if idx < 0 or idx > len(layers) - 2:
+            raise ValueError(f"Layer {idx} tidak valid.")
+
+        displayed_layers.append(layers[idx + 1])
+
+    # Membuat plot histogram
+    plt.figure(figsize=(10, 5))
+
+    for layer in displayed_layers:
+        weights = np.concatenate([neuron.weights for neuron in layer.neurons])
+
+        plt.hist(weights, bins=30, alpha=0.6, label=f"Layer {layer_idxs[displayed_layers.index(layer)]}")
+
+    plt.xlabel("Nilai Bobot")
+    plt.ylabel("Frekuensi")
+    plt.title("Distribusi Bobot di Layer yang Dipilih")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def plot_gradient_dist(layer_idxs: List[int], layers: List[Layer]):
+    # 0 -> input
+    # len(layers) - 1 -> output
+
+    displayed_layers: List[Layer] = []
+    for idx in layer_idxs:
+        if idx < 0 or idx > len(layers) - 2:
+            raise ValueError(f"Layer {idx} tidak valid..")
+
+        displayed_layers.append(layers[idx + 1])
+
+    # Membuat plot histogram
+    plt.figure(figsize=(10, 5))
+
+    for layer in displayed_layers:
+        gradients = np.concatenate([neuron.weights_gradients for neuron in layer.neurons])
+
+        plt.hist(gradients, bins=30, alpha=0.6, label=f"Layer {layer_idxs[displayed_layers.index(layer)]}")
+
+    plt.xlabel("Nilai Gradien Bobot")
+    plt.ylabel("Frekuensi")
+    plt.title("Distribusi Gradien Bobot di Layer yang Dipilih")
+    plt.legend()
+    plt.grid(True)
     plt.show()
