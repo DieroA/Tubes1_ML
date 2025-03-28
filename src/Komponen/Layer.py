@@ -7,7 +7,7 @@ class Layer:
     def __init__(self, n_neurons: int, 
                  n_input: int, weight_init_method: str, activation_func: FungsiAktivasi, 
                  lower_bound: float = None, upper_bound: float = None, 
-                 mean: float = None, variance: float = None, seed: int = None, values: List[int] = None):
+                 mean: float = None, variance: float = None, seed: int = None):
         # Inisialisasi layer.
         self.n_neurons = n_neurons
         self.activation_func = activation_func
@@ -24,4 +24,3 @@ class Layer:
         self.bias_gradients = np.array([[neuron.bias_gradients] for neuron in self.neurons])
 
         self.value_matrice: np.array = np.empty((0, 0))
-        self.gradients_matrice: np.array = np.empty((0, 0))

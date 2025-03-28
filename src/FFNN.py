@@ -9,14 +9,17 @@ import numpy as np
 
 class FFNN:
     def __init__(self, input_data: np.array, output_data: np.array, input_size: int, hidden_size: int, output_size: int, n_hidden: int, batch_size: int, learning_rate: float, epoch: int,
-                 activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: str = "zero", 
+                 activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: List[str] = [], 
                  lower_bound: float = None, upper_bound: float = None, mean: float = None, 
                  variance: float = None, seed: int = 42):
-        # Inisialisasi model.
-        # input_size: Jumlah input
-        # hidden_size: Jumlah neuron per layer
-        # output_size: Jumlah output / kelas
-        # n_hidden: Jumlah hidden layer
+        """ 
+            Inisialisasi model.
+            
+            input_size: Jumlah input
+            hidden_size: Jumlah neuron per layer
+            output_size: Jumlah output / kelas
+            n_hidden: Jumlah hidden layer
+        """
         
         self.layers: List[Layer] = []
         self.activation_func: List[FungsiAktivasi] = activation_func
@@ -24,17 +27,20 @@ class FFNN:
         self.learning_rate = learning_rate
         self.epoch = epoch
 
+        if len(weight_init_method) == 0:
+            weight_init_method = ["zero" for _ in range(2 + n_hidden)]
+
         # Input layer
-        self.layers.append(Layer(input_size, 0, weight_init_method, activation_func[0], lower_bound, upper_bound, mean, variance, seed))
+        self.layers.append(Layer(input_size, 0, weight_init_method[0], activation_func[0], lower_bound, upper_bound, mean, variance, seed))
         
         # Hidden layer(s)
         prev_size: int = input_size
         for i in range(n_hidden):
-            self.layers.append(Layer(hidden_size, prev_size, weight_init_method, activation_func[i + 1], lower_bound, upper_bound, mean, variance, seed))
+            self.layers.append(Layer(hidden_size, prev_size, weight_init_method[i + 1], activation_func[i + 1], lower_bound, upper_bound, mean, variance, seed))
             prev_size = hidden_size
 
         # Output layer
-        self.layers.append(Layer(output_size, hidden_size, weight_init_method, activation_func[-1], lower_bound, upper_bound, mean, variance, seed))
+        self.layers.append(Layer(output_size, hidden_size, weight_init_method[-1], activation_func[-1], lower_bound, upper_bound, mean, variance, seed))
         
         # Loss Function
         self.lost_function: FungsiLoss = loss_func
@@ -251,6 +257,7 @@ output_size = 2
 n_hidden = 2
 
 fungsi_aktivasi = [FungsiAktivasi("relu")] + [FungsiAktivasi("relu") for _ in range(n_hidden)] + [FungsiAktivasi("linear")]
+weight_init_method = ["uniform" for _ in range(2 + n_hidden)]
 
 custom_nn = FFNN(
     X_train, y_train,
@@ -260,7 +267,7 @@ custom_nn = FFNN(
     learning_rate=0.0001,
     epoch=2000,
     loss_func=FungsiLoss("mse"),
-    weight_init_method="uniform",
+    weight_init_method=weight_init_method,
     lower_bound=0, upper_bound=1,
     seed=42
 )
@@ -311,6 +318,9 @@ print("\n=== Final Loss Comparison ===")
 print(f"Custom FFNN final loss: {final_custom_loss:.4f}")
 print(f"Scikit-learn final loss: {final_sklearn_loss:.4f}")
 
+from visualize import visualize_network
+
+visualize_network(custom_nn.layers)
 
 
 # # Testing
