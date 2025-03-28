@@ -4,7 +4,7 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from Fungsi.FungsiAktivasi import FungsiAktivasi
 from Fungsi.FungsiLoss import FungsiLoss
-from FFNN import FFNN
+from Model.FFNN import FFNN
 from sklearn.preprocessing import StandardScaler, LabelBinarizer
 from sklearn.utils import check_random_state
 

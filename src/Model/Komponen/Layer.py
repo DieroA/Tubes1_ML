@@ -1,5 +1,5 @@
 from typing import List
-from Komponen.Neuron import Neuron
+from Model.Komponen.Neuron import Neuron
 from Fungsi.FungsiAktivasi import FungsiAktivasi
 import numpy as np
 
