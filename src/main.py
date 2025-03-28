@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler, LabelBinarizer
 from FFNN import FFNN
 from Fungsi.FungsiAktivasi import FungsiAktivasi, RELU, SIGMOID, LINEAR, TANH, SOFTMAX
 from Fungsi.FungsiLoss import FungsiLoss, CCE, MSE, BCE
-from visualize import visualize_network, plot_gradient_dist, plot_weight_dist
+from visualize import visualize_network, plot_gradient_dist, plot_weight_dist, grafik_loss
 
 """ 
     Load and Process data 
@@ -45,9 +45,9 @@ INPUT_SIZE: int = 784
 OUTPUT_SIZE: int = 10
 
 # Variables
-depth: int = 2
-width: int = 1
-activation_func: List[FungsiAktivasi] = [LINEAR] + [TANH for _ in range(depth)] + [SOFTMAX] 
+depth: int = 1
+width: int = 3
+activation_func: List[FungsiAktivasi] = [TANH for _ in range(depth + 2)] 
 loss_func: List[FungsiLoss] = CCE
 weight_init_method: List[str] = ["uniform" for _ in range(2 + depth)]
 
@@ -87,6 +87,8 @@ if __name__ == "__main__":
     visualize_network(model.layers)
     plot_gradient_dist([0, 1], model.layers)
     plot_weight_dist([0, 1], model.layers)
+    grafik_loss(history)
+
     
 
 

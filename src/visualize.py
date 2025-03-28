@@ -179,3 +179,13 @@ def plot_gradient_dist(layer_idxs: List[int], layers: List[Layer]):
     plt.legend()
     plt.grid(True)
     plt.show()
+
+def grafik_loss(history) :
+    losses = history['train_loss']
+    plt.plot(losses, label='Training Loss')
+    plt.title('Training Loss Over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.grid(True)
+    plt.legend()
+    plt.show()

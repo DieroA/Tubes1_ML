@@ -15,7 +15,7 @@ class Neuron:
             # Inisialisasi bobot neuron menggunakan metode yang dimasukkan."
             
             if weight_init_method == "zero":
-                return 0
+                return 0.0
             elif (weight_init_method == "uniform"):
                 if lower_bound is None or upper_bound is None:
                     raise ValueError("Inisialisasi uniform memperlukan lower_bound dan upper_bound yang terdefinisi.")
