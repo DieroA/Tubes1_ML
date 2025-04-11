@@ -2,7 +2,7 @@ from Fungsi.FungsiAktivasi import FungsiAktivasi
 from Fungsi.FungsiLoss import FungsiLoss
 # from Scaler.StandardScaler import StandardScalers
 import pickle
-from Komponen.Layer import Layer
+from Model.Komponen.Layer import Layer
 from typing import List
 from tqdm import tqdm
 

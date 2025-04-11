@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from typing import List
-from Komponen.Layer import Layer
+from Model.Komponen.Layer import Layer
 import numpy as np
 
 def visualize_network(layers: List[Layer]):
@@ -178,4 +178,14 @@ def plot_gradient_dist(layer_idxs: List[int], layers: List[Layer]):
     plt.title("Distribusi Gradien Bobot di Layer yang Dipilih")
     plt.legend()
     plt.grid(True)
+    plt.show()
+
+def grafik_loss(history) :
+    losses = history['train_loss']
+    plt.plot(losses, label='Training Loss')
+    plt.title('Training Loss Over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.grid(True)
+    plt.legend()
     plt.show()
