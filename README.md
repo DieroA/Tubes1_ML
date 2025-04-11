@@ -35,6 +35,6 @@ Repository ini berisi implementasi Feed Forward Neural Network (FFNN) menggunaka
 
 | Nama                       | NIM      | Tugas                                                                                   |
 | -------------------------- | -------- | --------------------------------------------------------------------------------------- |
-| **Rici Trisna Putra**      | 13522026 | Backward Propagation, Fungsi Loss, Fungsi Aktivasi, Save & Load, `main.py`              |
+| **Rici Trisna Putra**      | 13522026 | Backward Propagation, Fungsi Loss, Fungsi Aktivasi, Save & Load, `test.py`              |
 | **Imam Hanif Mulyarahman** | 13522030 | Forward Propagation, Regularisasi, Laporan                                               |
-| **Diero Arga Purnama**     | 13522056 | Fungsi Aktivasi, Fungsi Loss, Kerangka Model (Neuron, Layer, FFNN), README, Visualisasi |
+| **Diero Arga Purnama**     | 13522056 | Fungsi Aktivasi, Fungsi Loss, Kerangka Model (Neuron, Layer, FFNN), README, Visualisasi, `main.py`  |
