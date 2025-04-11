@@ -92,7 +92,7 @@ if __name__ == "__main__":
             INPUT_SIZE, width, OUTPUT_SIZE,
             depth, batch_size, learning_rate, jumlah_epoch,
             activation_func, loss_func, weight_init_method,
-            lower_bound = -0.1, upper_bound = 0.1, seed = 42
+            lower_bound = -0.1, upper_bound = 0.1, seed = 42, lambda_L1 = 1e-4, lambda_L2 = 1e-4
         )
 
         # Train model
@@ -118,7 +118,6 @@ if __name__ == "__main__":
         plot_gradient_dist([0, 1], model.layers)
         plot_weight_dist([0, 1], model.layers)
         grafik_loss(history)
-
 
     # Save
     save_model: str = str(input("Apakah anda ingin menyimpan model ini? [Ya/Tidak]: ")).strip().lower()
