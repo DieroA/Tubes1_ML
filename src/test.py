@@ -47,13 +47,15 @@ ffnn = FFNN(
     n_hidden=n_hidden,
     batch_size=10,
     learning_rate=0.01,
-    epoch=50,
+    epoch=100,
     activation_func=fungsi_aktivasi,
     loss_func=FungsiLoss("cce"),
     weight_init_method=weight_init_method,
     lower_bound=-0.1,
     upper_bound=0.1,
-    seed=42
+    seed=42,
+    lambda_L1=1e-4,
+    lambda_L2=1e-4
 )
 
 # Train the network with validation data

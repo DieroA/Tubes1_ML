@@ -11,8 +11,8 @@ import numpy as np
 class FFNN:
     def __init__(self, input_data: np.array, output_data: np.array, input_size: int, hidden_size: List[int], output_size: int, n_hidden: int, batch_size: int, learning_rate: float, epoch: int,
                  activation_func: List[FungsiAktivasi],  loss_func: FungsiLoss = FungsiLoss("mse"), weight_init_method: List[str] = [], 
-                 lower_bound: float = None, upper_bound: float = None, mean: float = None, 
-                 variance: float = None, seed: int = 42):
+                 lower_bound: float = None, upper_bound: float = None, mean: float = None,
+                 variance: float = None, seed: int = 42, lambda_L1:float = 0.0, lambda_L2:float = 0.0):
         """ 
             Inisialisasi model.
             
@@ -49,6 +49,12 @@ class FFNN:
         # Target Value
         self.target: np.array = output_data
 
+        # Nilai Lambda L1
+        self.lambda_L1 = lambda_L1
+
+        # Nilai Lambda L2
+        self.lambda_L2 = lambda_L2
+
         # Init matrix
         self.generate_matrices(input_data)
 
@@ -74,6 +80,13 @@ class FFNN:
                 neuron.bias = bias_matrice[i, 0]
                 neuron.value_matrice = value_matrice[:, i].reshape(-1, 1)
 
+    def loss_with_regularization(self, original_loss, layers, lambda_l1=0.0, lambda_l2=0.0):
+        l1_penalty = sum(np.sum(np.abs(layer.weight_matrice)) for layer in layers[1:])
+        l2_penalty = sum(np.sum(layer.weight_matrice ** 2) for layer in layers[1:])
+        return original_loss + lambda_l1 * l1_penalty + lambda_l2 * l2_penalty
+
+
+
     def forward_propagation(self, batch_input, batch_output):
         for idx, layer in enumerate(self.layers) :
             if (idx != 0):
@@ -91,6 +104,7 @@ class FFNN:
             last_value = layer.value_matrice
         # Fungsi Loss untuk nilai error
         error = self.lost_function.func(batch_output, last_value)
+        error = self.loss_with_regularization(error, self.layers, lambda_l1=self.lambda_L1, lambda_l2=self.lambda_L2)
         # Update value tiap neuron setelah 
         self.update_neurons_from_matrices()
         return error
