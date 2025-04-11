@@ -37,53 +37,53 @@ output_size = 10   # Digits 0-9
 
 # Use ReLU for hidden, softmax for output
 fungsi_aktivasi = [FungsiAktivasi("linear")] + [FungsiAktivasi("tanh") for _ in range(n_hidden)] + [FungsiAktivasi("softmax")]
-weight_init_method = ["uniform" for _ in range(2 + n_hidden)]
+weight_init_method = ["he" for _ in range(2 + n_hidden)]
 
-# ffnn = FFNN(
-#     X_train, y_train_onehot,
-#     input_size=input_size,
-#     hidden_size=hidden_size,
-#     output_size=output_size,
-#     n_hidden=n_hidden,
-#     batch_size = 10,
-#     learning_rate = 0.01,
-#     epoch = 100,
-#     activation_func=fungsi_aktivasi,
-#     loss_func=FungsiLoss("cce"),  # Categorical cross-entropy
-#     weight_init_method=weight_init_method,
-#     lower_bound=-0.1,
-#     upper_bound=0.1,
-#     seed=42
-# )
+ffnn = FFNN(
+    X_train, y_train_onehot,
+    input_size=input_size,
+    hidden_size=hidden_size,
+    output_size=output_size,
+    n_hidden=n_hidden,
+    batch_size = 10,
+    learning_rate = 0.01,
+    epoch = 200,
+    activation_func=fungsi_aktivasi,
+    loss_func=FungsiLoss("cce"),  # Categorical cross-entropy
+    weight_init_method=weight_init_method,
+    lower_bound=-0.1,
+    upper_bound=0.1,
+    seed=42
+)
 
 
-# # Train the network
-# history = ffnn.train(
-#     X_train, y_train_onehot,
-#     verbose=1
-# )
+# Train the network
+history = ffnn.train(
+    X_train, y_train_onehot,
+    verbose=1
+)
 
-# plt.plot(history['train_loss'], label='Train')
-# plt.plot(history['val_loss'], label='Validation')
-# plt.legend()
-# plt.show()
+plt.plot(history['train_loss'], label='Train')
+plt.plot(history['val_loss'], label='Validation')
+plt.legend()
+plt.show()
 
 # Evaluation
 def accuracy(y_true, y_pred):
     return np.mean(np.argmax(y_true, axis=1) == np.argmax(y_pred, axis=1))
 
-# train_pred = ffnn.predict(X_train)
-# test_pred = ffnn.predict(X_test)
-
-# print(f"Train accuracy: {accuracy(y_train_onehot, train_pred):.4f}")
-# print(f"Test accuracy: {accuracy(y_test_onehot, test_pred):.4f}")
-
-# save_object = FFNN.save("helo",ffnn)
-
-test_ffnn = FFNN.load("helo")
-
-train_pred = test_ffnn.predict(X_train)
-test_pred = test_ffnn.predict(X_test)
+train_pred = ffnn.predict(X_train)
+test_pred = ffnn.predict(X_test)
 
 print(f"Train accuracy: {accuracy(y_train_onehot, train_pred):.4f}")
 print(f"Test accuracy: {accuracy(y_test_onehot, test_pred):.4f}")
+
+# save_object = FFNN.save("helo",ffnn)
+
+# test_ffnn = FFNN.load("helo")
+
+# train_pred = test_ffnn.predict(X_train)
+# test_pred = test_ffnn.predict(X_test)
+
+# print(f"Train accuracy: {accuracy(y_train_onehot, train_pred):.4f}")
+# print(f"Test accuracy: {accuracy(y_test_onehot, test_pred):.4f}")

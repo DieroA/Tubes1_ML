@@ -94,7 +94,20 @@ class FFNN:
         # Update value tiap neuron setelah 
         self.update_neurons_from_matrices()
         return error
+    
+    def clip_gradients_global(self, gradients: List[np.ndarray], max_norm: float = 5.0) -> List[np.ndarray]:
+        # Flatten all gradients into a single vector
+        total_norm = 0.0
+        for grad in gradients:
+            total_norm += np.sum(grad ** 2)
+        total_norm = np.sqrt(total_norm)
 
+        if total_norm > max_norm:
+            scale = max_norm / (total_norm + 1e-6)
+            gradients = [grad * scale for grad in gradients]
+
+        return gradients
+    
     def backward_propagation(self, batch_output):
         # Inisialisasi List Gradien
         gradients = []
@@ -118,12 +131,6 @@ class FFNN:
         
         gradients.insert(0, output_gradient)
 
-        max_grad_norm = 1.0
-        global_grad_norm = np.sqrt(sum(np.sum(g**2) for g in gradients))
-        if global_grad_norm > max_grad_norm:
-            scale = max_grad_norm / global_grad_norm
-            gradients = [g * scale for g in gradients]
-
         for i in range(1, len(self.layers)):
             current_layer = self.layers[i]
             prev_layer = self.layers[i-1]
@@ -142,6 +149,8 @@ class FFNN:
                 layer_gradient = error * activation_derivative
                 
             gradients.insert(0, layer_gradient)
+
+        gradients = self.clip_gradients_global(gradients)
 
         # Update bobot dan bias dengan gradien
         for i in range(1, len(self.layers)):
