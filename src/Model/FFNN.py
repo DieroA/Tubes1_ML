@@ -95,9 +95,9 @@ class FFNN:
                 # Fungsi Aktivasi
                 # print(idx)
                 # print(hidden_value)
-                hidden_value = self.activation_func[idx].func(hidden_value)
-                #Update nilai matriks
-                layer.value_matrice = hidden_value.transpose()
+                # Activation is applied per sample (rows = samples), so softmax
+                # normalizes over the classes, not over the batch
+                layer.value_matrice = self.activation_func[idx].func(hidden_value.transpose())
             else:
                 layer.value_matrice = batch_input
             # Nilai input untuk layer berikutnya
@@ -172,8 +172,14 @@ class FFNN:
             prev_layer = self.layers[i-1]
             
             # Hitung Gradients
-            current_layer.weight_gradients = np.dot(gradients[i-1].T, prev_layer.value_matrice) / self.batch_size
-            current_layer.bias_gradients = np.mean(gradients[i-1], axis=0, keepdims=True).T
+            # The loss derivative is already averaged over the batch, so sum here
+            current_layer.weight_gradients = np.dot(gradients[i-1].T, prev_layer.value_matrice)
+            current_layer.bias_gradients = np.sum(gradients[i-1], axis=0, keepdims=True).T
+
+            # L1 and L2 penalties are part of the loss, so they belong in the gradient too
+            current_layer.weight_gradients = current_layer.weight_gradients \
+                + self.lambda_L1 * np.sign(current_layer.weight_matrice) \
+                + 2 * self.lambda_L2 * current_layer.weight_matrice
             
             # Update parameter
             current_layer.weight_matrice -= self.learning_rate * current_layer.weight_gradients
@@ -249,9 +255,7 @@ class FFNN:
                 # Fungsi Aktivasi
                 # print(idx)
                 # print(hidden_value)
-                hidden_value = self.activation_func[idx].func(hidden_value)
-                #Update nilai matriks
-                last_value = hidden_value.transpose()
+                last_value = self.activation_func[idx].func(hidden_value.transpose())
             else:
                 last_value = input
         

@@ -39,17 +39,18 @@ class FungsiAktivasi:
 
 
     @staticmethod
-    def sigmoid_derivative(x: np.array) -> np.array:
-        sig = 1 / (1 + np.exp(-x))
-        return sig * (1 - sig)
+    def sigmoid_derivative(a: np.array) -> np.array:
+        # a = sigmoid(z), the layer's activated output
+        return a * (1 - a)
 
     @staticmethod
     def tanh(x: np.array) -> np.array:
         return np.tanh(x)
 
     @staticmethod
-    def tanh_derivative(x: np.array) -> np.array:
-        return 1 - np.tanh(x)**2
+    def tanh_derivative(a: np.array) -> np.array:
+        # a = tanh(z), the layer's activated output
+        return 1 - a**2
 
     @staticmethod
     def softmax(x: np.array) -> np.array:
